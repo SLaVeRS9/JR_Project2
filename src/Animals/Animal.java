@@ -1,10 +1,10 @@
 package Animals;
 
 public abstract class Animal {
-    private Double weight;
-    private Integer maxCountInCell;
-    private Integer maxMoveDistance;
-    private Double maxFoodToSatiate;
+    protected Double weight;
+    protected Integer maxCountInCell;
+    protected Integer maxMoveDistance;
+    protected Double maxFoodToSatiate;
 
     public abstract void eat ();
     public abstract void multiply();
