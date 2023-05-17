@@ -4,22 +4,14 @@ import Biosphere.BiosphereTypes;
 import Biosphere.Plant;
 
 public class Bush extends Plant {
+    private static final BiosphereTypes TYPE = BiosphereTypes.BUSH;
     private static final Integer MAX_COUNT_IN_CELL = 200;
     private static final Integer MAX_MULTIPLYING = 30;
-
+    private static final Double START_WEIGHT = 1.0;
     public static Integer currentCount = 0;
-    public Bush() {
-        maxCountInCell = MAX_COUNT_IN_CELL;
-        maxMultiplying = MAX_MULTIPLYING;
-        weight = 1.0;
-        type = BiosphereTypes.BUSH;
-        Bush.currentCount++;
-    }
 
-    @Override
-    public String toString() {
-        return "Bush{" +
-                "weight=" + weight +
-                '}';
+    public Bush() {
+        super(TYPE, MAX_COUNT_IN_CELL, START_WEIGHT, MAX_MULTIPLYING);
+        Bush.currentCount++;
     }
 }

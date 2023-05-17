@@ -4,28 +4,14 @@ import Biosphere.BiosphereTypes;
 import Biosphere.Plant;
 
 public class Grass extends Plant {
+    private static final BiosphereTypes TYPE = BiosphereTypes.GRASS;
     private static final Integer MAX_COUNT_IN_CELL = 200;
     private static final Integer MAX_MULTIPLYING = 30;
+    private static final Double START_WEIGHT = 0.1;
     public static Integer currentCount = 0;
 
     public Grass() {
-        weight = 0.1;
-        type = BiosphereTypes.GRASS;
-        maxCountInCell = MAX_COUNT_IN_CELL;
-        maxMultiplying = MAX_MULTIPLYING;
+        super(TYPE, MAX_COUNT_IN_CELL, START_WEIGHT, MAX_MULTIPLYING);
         Grass.currentCount++;
     }
-
-    @Override
-    protected void grow() {
-        super.grow();
-    }
-
-    @Override
-    public String toString() {
-        return "Grass{" +
-                "weight=" + weight +
-                '}';
-    }
-
 }
