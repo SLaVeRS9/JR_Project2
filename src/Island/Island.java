@@ -1,11 +1,8 @@
 package Island;
 
-import Biosphere.BiosphereTypes;
-import Biosphere.Biosphere;
-import Biosphere.Plant;
-import Biosphere.Animal;
+import Biosphere.*;
 import SimulatorProperties.SimulationProperties;
-
+import ThreadPools.Test;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.random.RandomGenerator;
@@ -35,7 +32,7 @@ public class Island implements Runnable {
     //Generate island map to use
     public static void generateMap(){
         createMap();
-        System.out.println("Day " + day + "\nThe situation on the island at the beginning\n");
+        System.out.println("\nDay " + day + "\nThe situation on the island at the beginning\n");
 
         //Add plants to the map
         addPlants();
@@ -62,6 +59,11 @@ public class Island implements Runnable {
         return getCell(randomX, randomY);
     }
 
+    public static Integer getDay(){
+        return day;
+    }
+
+    // Create map
     private static void createMap() {
         //Create island map
         for (int i = 0; i < SimulationProperties.ISLAND_WIDTH; i++) {
@@ -74,6 +76,7 @@ public class Island implements Runnable {
         }
     }
 
+    // Add plants on all island map
     private static void addPlants(){
         for (List<Cell> cells : islandMap) {
             for (Cell cell : cells) {
@@ -83,7 +86,7 @@ public class Island implements Runnable {
         }
     }
 
-    //Add Animals on all island map
+    // Add animals on all island map
     private static void addAnimals() {
         List<Animal> animals = SimulationProperties.startAnimalsPopulation;
         while (animals.size() > 0) {
@@ -116,11 +119,10 @@ public class Island implements Runnable {
 
     @Override
     public void run() {
-        //synchronized (this) {
-                day++;
-                System.out.println("\nDay " + day + "\nCurrent statistics:");
-                printMap();
-        //}
+        day++;
+        System.out.println("\nDay " + day + "\nCurrent statistics:");
+        printMap();
+        Test.phaser.arriveAndAwaitAdvance();
     }
 
     public static class Cell {
@@ -134,7 +136,6 @@ public class Island implements Runnable {
             }
         };
         private List<Animal> animals = new ArrayList<>();
-        private final List<Animal> unmodifiableAnimals = Collections.unmodifiableList(animals);
         private List<Plant> plants = new ArrayList<>();
         private final List<Plant> unmodifiablePlants = Collections.unmodifiableList(plants);
 
@@ -182,14 +183,13 @@ public class Island implements Runnable {
                 plants.add( (Plant) biosphere);
             }
             biosphere.setPosition(position);
-            if (amountToAdd > 0) {
-                System.out.println("Has been created: " + biosphere.getType().getUnicode() + " " + amountToAdd + " count");
-            }
         }
 
         //Generate some count of biosphere and check for limits
         private Integer generateSomeBiosphere(Biosphere biosphere) {
             Integer randomGeneratedAmount = ThreadLocalRandom.current().nextInt(0, biosphere.getMaxMultiplying());
+            System.out.println("Has been generate " + biosphere.getType().getUnicode() + " " + randomGeneratedAmount
+                    + " count");
             if (getBiospheresAmountByType(biosphere.getType()) == null) {
                 return randomGeneratedAmount;
             }
