@@ -15,7 +15,8 @@ public class Simulation {
     private static Phaser phaser = new Phaser(3);
     public static void start() throws InterruptedException {
         System.out.println("Hello!\nWelcome to the island!");
-        System.out.println("If you want to stop simulation, enter any world");
+        System.out.println("--> If you want to stop simulation, enter any world <--");
+        Thread.sleep(3000);
         Scanner input = new Scanner(System.in);
         Island.generateMap();
 
