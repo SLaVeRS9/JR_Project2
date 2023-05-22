@@ -1,10 +1,7 @@
 package Biosphere.Animals.Herbivores;
 
 import Biosphere.*;
-import Biosphere.BiosphereTypes;
 import Island.Island;
-
-
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -14,6 +11,7 @@ public abstract class Herbivore extends Animal {
         super(type, maxCountInCell, maxFoodToSatiate, startWeight, maxMultiplying, maxMoveDistance);
     }
 
+    // Find plant to eat
     public Optional<Plant> findPlant() {
         Island.Cell.Position currentPosition = getCurrentPosition();
         Island.Cell currentCell = Island.getCell(currentPosition);
@@ -25,26 +23,22 @@ public abstract class Herbivore extends Animal {
             return Optional.empty() ;
         }
     }
+
+    // Eat method to eat plant or other animal
     @Override
     public void eat() {
-        System.out.println("HERBIVORE START EAT");
         Island.Cell currentCell = Island.getCell(getCurrentPosition());
         Optional<Plant> optionalPlant = findPlant();
         if (optionalPlant.isPresent()) {
-            System.out.println("HERBIVORE EAT PLANT");
             Plant plant = optionalPlant.get();
             Integer plantsAmount = currentCell.getBiospheresAmountByType(plant.getType());
-            System.out.println("plantsAmount " + plantsAmount);
             Double neededFood = MAX_FOOD_TO_SATIATE - currentSatiety;
-            System.out.println("neededFood " + neededFood);
             Double plantsCanBeEaten = ( plantsAmount * plant.getWeight() ) > neededFood ? neededFood / plant.getWeight() : plantsAmount * plant.getWeight();
-            System.out.println("plantsCanBeEaten " + plantsCanBeEaten);
             currentSatiety = plantsCanBeEaten * plant.getWeight();
-            System.out.println("currentSatiety " + currentSatiety);
             Integer remainingPlants = plantsAmount - plantsCanBeEaten.intValue();
-            System.out.println("remainingPlants " + remainingPlants);
             currentCell.updateBiospheresAmountByType(plant.getType(), remainingPlants);
             currentCell.getPlants().remove(plant);
+            System.out.println("Herbivore " + this.getType().getUnicode() + " has been eat " + plantsCanBeEaten + " " + plant.getType().getUnicode());
         } else {
             super.eat();
         }
