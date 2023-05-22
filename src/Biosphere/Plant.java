@@ -3,6 +3,7 @@ package Biosphere;
 import Biosphere.Plants.Bush;
 import Biosphere.Plants.Grass;
 import Island.Island;
+import Simulation.Simulation;
 import SimulatorProperties.SimulationProperties;
 import ThreadPools.Test;
 import java.util.List;
@@ -92,7 +93,7 @@ public abstract class Plant extends Biosphere implements Runnable {
 
     @Override
     public void run() {
-        Test.phaser.arriveAndAwaitAdvance();
+        Simulation.getPhaser().arriveAndAwaitAdvance();
         grow();
     }
 }
