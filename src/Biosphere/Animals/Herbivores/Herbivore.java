@@ -38,7 +38,7 @@ public abstract class Herbivore extends Animal {
             Integer remainingPlants = plantsAmount - plantsCanBeEaten.intValue();
             currentCell.updateBiospheresAmountByType(plant.getType(), remainingPlants);
             currentCell.getPlants().remove(plant);
-            System.out.println("Herbivore " + this.getType().getUnicode() + " has been eat " + plantsCanBeEaten + " " + plant.getType().getUnicode());
+            System.out.println("Herbivore " + this.getType().getUnicode() + " has eaten " + plantsCanBeEaten + " " + plant.getType().getUnicode());
         } else {
             super.eat();
         }
