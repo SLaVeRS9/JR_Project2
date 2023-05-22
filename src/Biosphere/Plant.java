@@ -2,9 +2,9 @@ package Biosphere;
 
 import Biosphere.Plants.Bush;
 import Biosphere.Plants.Grass;
-import Island.IslandMap;
+import Island.Island;
 import SimulatorProperties.SimulationProperties;
-
+import ThreadPools.Test;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -12,21 +12,45 @@ import java.util.concurrent.ThreadLocalRandom;
 
 
 public abstract class Plant extends Biosphere implements Runnable {
-
-    protected Integer maxMultiplying;
-
-    public Integer getMaxMultiplying(){
-        return maxMultiplying;
+    protected Plant(BiosphereTypes type, Integer maxCountInCell, Double startWeight, Integer maxMultiplying) {
+        super(type, maxCountInCell, startWeight, maxMultiplying);
     }
 
-    //Grow new plants on the all island
+    // Get random plant
+    public static Plant getRandomPlant() {
+        Optional<Plant> oPlant = createPlant();
+        if (oPlant.isEmpty()) {
+            return new Grass();
+        }
+        Plant createdPlant = oPlant.get();
+        return createdPlant;
+    }
+
+    // Create any kind of Plant
+    private static Optional<Plant> createPlant() {
+        Random random = new Random();
+        Plant creatingPlant = switch (random.nextInt(2)) {
+            case 0 -> new Bush();
+            case 1 -> new Grass();
+            default -> null;
+        };
+        return Optional.ofNullable(creatingPlant);
+    }
+
+    // Check can plant be grown
+    private static boolean plantCanBeGrow() {
+        int random = ThreadLocalRandom.current().nextInt(100);
+        return random <= SimulationProperties.PERCENT_OF_CHANCE_NEW_PLANTS_GROW_IN_CELL;
+    }
+
+    // TODO LATER Переделать на рост в рамках одной клетки, а рост по карте - вынести в карту
+    // Grow new plants on the all island
     protected void grow() {
-        System.out.println("\n\tStart grow iteration");
-        //TODO Добвить проверку на возможность расти исходя из предела растения на клетку
-        List<List<IslandMap.Cell>> unmodifiableIslandMap = IslandMap.getIslandMap();
+        System.out.println("\nStart grow iteration");
+        List<List<Island.Cell>> unmodifiableIslandMap = Island.getIslandMap();
         for (int i = 0; i < SimulationProperties.ISLAND_WIDTH; i++) {
             for (int j = 0; j < SimulationProperties.ISLAND_HEIGHT; j++) {
-                IslandMap.Cell cell = unmodifiableIslandMap.get(i).get(j);
+                Island.Cell cell = unmodifiableIslandMap.get(i).get(j);
                 if (!plantCanBeGrow()) {
                     continue;
                 }
@@ -35,51 +59,40 @@ public abstract class Plant extends Biosphere implements Runnable {
                     continue;
                 }
                 Plant createdPlant = optionalCreatingPlant.get();
-
                 boolean isLimitInCell = checkPlantForLimitCountInCell(cell, createdPlant);
-
                 if (isLimitInCell){
-                    System.out.println("is limit");
+                    continue;
+                }
+                Integer biospheresAmountByType = cell.getBiospheresAmountByType(createdPlant.getType());
+                if (biospheresAmountByType == null) {
                     continue;
                 }
                 cell.addBiosphere(createdPlant);
-                System.out.printf("Added plant: %s\t into cell: x=%s y=%s%n", createdPlant.getType().getUnicode(), i, j);
+                System.out.printf("Added plant: %s\t into cell: x=%s y=%s%n%n", createdPlant.getType().getUnicode(), i, j);
             }
         }
     }
 
-    protected boolean checkPlantForLimitCountInCell(IslandMap.Cell cell, Biosphere biosphere) {
-        System.out.println("Check limit");
+    //Check plants amount limit in cell
+    protected boolean checkPlantForLimitCountInCell(Island.Cell cell, Biosphere biosphere) {
         Integer biospheresAmountByType = cell.getBiospheresAmountByType(biosphere.getType());
-        System.out.println(biospheresAmountByType);
         if (biospheresAmountByType == null) {
-            System.out.println("getBiospheresAmountByType = " + biospheresAmountByType);
             return false;
         }
-        System.out.println("CHECK");
-        return biospheresAmountByType >= biosphere.maxCountInCell;
+        return biospheresAmountByType >= biosphere.getMaxCountInCell();
     }
 
-
-    //Create any kind of Plant
-    private static Optional<Plant> createPlant() {
-        Random random = new Random();
-        Plant creatingPlant = switch (random.nextInt(2)) {
-            case 0 -> new Bush();
-            case 1 -> new Grass();
-            default -> null;
-        };
-        System.out.println("Plant has been created: " + creatingPlant.getType().getUnicode());
-        return Optional.ofNullable(creatingPlant);
-    }
-
-    private static boolean plantCanBeGrow() {
-        int random = ThreadLocalRandom.current().nextInt(100);
-        return random <= SimulationProperties.PERCENT_OF_CHANCE_NEW_PLANTS_GROW_IN_CELL;
+    @Override
+    public String toString() {
+        return "Plant{ " + TYPE.getUnicode() +
+                "\tPosition= " + "x:" + currentPosition.getX() + " y:" + currentPosition.getY() +
+                "\t, weight=" + weight +
+                '}';
     }
 
     @Override
     public void run() {
+        Test.phaser.arriveAndAwaitAdvance();
         grow();
     }
 }
