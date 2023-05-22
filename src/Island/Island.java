@@ -1,6 +1,7 @@
 package Island;
 
 import Biosphere.*;
+import Simulation.Simulation;
 import SimulatorProperties.SimulationProperties;
 import ThreadPools.Test;
 import java.util.*;
@@ -122,7 +123,7 @@ public class Island implements Runnable {
         day++;
         System.out.println("\nDay " + day + "\nCurrent statistics:");
         printMap();
-        Test.phaser.arriveAndAwaitAdvance();
+        Simulation.getPhaser().arriveAndAwaitAdvance();
     }
 
     public static class Cell {
