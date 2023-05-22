@@ -23,33 +23,29 @@ public abstract class Animal extends Biosphere implements Runnable {
         currentSatiety = MAX_FOOD_TO_SATIATE;
     }
 
+    // Animal eats other animal method
     public void eat() {
         Island.Cell currentCell = Island.getCell(getCurrentPosition());
         Optional<Animal> optionalAnimalVictim = findAnimalVictim();
         if (optionalAnimalVictim.isPresent()) {
             Animal animalVictim = optionalAnimalVictim.get();
-            System.out.println("ANIMAL VICTIM " + animalVictim.getType().getUnicode());
             if (canEat(animalVictim.getType())) {
-                System.out.println("ANIMAL CAN EAT ANIMAL");
-                System.out.println("currentSatiety " + currentSatiety);
                 currentSatiety += animalVictim.getWeight();
-                System.out.println("new currentSatiety " + currentSatiety);
                 currentSatiety = (currentSatiety > MAX_FOOD_TO_SATIATE) ? MAX_FOOD_TO_SATIATE : currentSatiety;
-                System.out.println("final currentSatiety " + currentSatiety);
                 Integer victimAmount = currentCell.getBiospheresAmountByType(animalVictim.getType());
                 currentCell.updateBiospheresAmountByType(animalVictim.getType(), --victimAmount);
+                System.out.println("Animal " + this.getType().getUnicode() + " has eaten " + animalVictim.getType().getUnicode());
             }
         }
     }
 
+    // Animal finds victim to eat method
     private Optional<Animal> findAnimalVictim() {
         List<Animal> animals = getCurrentCell().getAnimals();
         if (!animals.isEmpty()) {
             Integer randomAnimalIndex;
             do {
                 randomAnimalIndex = ThreadLocalRandom.current().nextInt(animals.size());
-                System.out.println("VICTIM --- " + animals.get(randomAnimalIndex).hashCode());
-                System.out.println("PREDATOR --- " + this.hashCode());
             } while (animals.get(randomAnimalIndex).equals(this) && !(animals.contains(this) && animals.size() == 1));
             return Optional.ofNullable(animals.remove(randomAnimalIndex.intValue()));
         } else {
@@ -57,30 +53,32 @@ public abstract class Animal extends Biosphere implements Runnable {
         }
     }
 
+    // Animal starvation logic
     private void decreaseSatiety() {
         currentSatiety -= MAX_FOOD_TO_SATIATE * SATIATE_INCREASE;
     }
 
+    // Animals multiply logic. Now realize only 1 child
     private void multiply() {
         Integer multiplyCandidates = getCurrentCell().getBiospheresAmountByType(TYPE);
         if (multiplyCandidates > 1) {
             try {
                 getCurrentCell().getAnimals().add(Animal.createAnimal(TYPE).orElseThrow());
                 getCurrentCell().getBiospheresByType().replace(TYPE, multiplyCandidates, ++multiplyCandidates);
+                System.out.println("Animal has multiplied");
             } catch (NoSuchElementException exception) {
-                System.out.println("Can't multiply");
+                System.out.println(exception.getMessage());
             }
+        } else {
+            System.out.println("Animal can't multiply");
         }
     }
 
+    // Animal move logic
     public void move() {
-        System.out.println(this + " MOVE");
         Island.Cell currentCell = getCurrentCell();
-        System.out.println("CURRENT POSITION " + currentCell);
         Direction directionMove = chooseDirectionMove();
-        System.out.println("DIRECTION MOVE " + directionMove);
         Integer directionDistance = ThreadLocalRandom.current().nextInt(1, MAX_MOVE_DISTANCE + 1);
-        System.out.println("DIRECTION DISTANCE " + directionDistance);
             Island.Cell newCell = switch (directionMove) {
                 case UP -> {
                     Integer newCoordinate = currentPosition.getY() - directionDistance;
@@ -113,31 +111,30 @@ public abstract class Animal extends Biosphere implements Runnable {
                 case STAY -> currentCell;
             };
         swapCells(currentCell, newCell);
+        System.out.println("Animal " + this.getType().getUnicode() + " has moved from " + currentCell + " "
+                + directionMove + " " + directionDistance + " to " + newCell);
     }
 
+    // The logic of moving an animal from cell to cell
     private void swapCells(Island.Cell from, Island.Cell to) {
         removeFromCell(from);
-
         Island.Cell.Position endPosition = to.getPosition();
         Island.Cell endCell = Island.getCell(endPosition);
-        Integer amountThisTypeInEndCell;
-        if (endCell.getBiospheresAmountByType(getType()) != null) {
-            amountThisTypeInEndCell = endCell.getBiospheresAmountByType(getType());
-        } else {
-            amountThisTypeInEndCell = 0;
-        }
+        Integer amountThisTypeInEndCell = endCell.getBiospheresAmountByType(getType()) != null
+                ? endCell.getBiospheresAmountByType(getType())
+                : 0;
         endCell.updateBiospheresAmountByType(getType(), ++amountThisTypeInEndCell);
         endCell.getAnimals().add(this);
-        System.out.println("NEW CELL " + endCell);
-        System.out.println("END POS " + endCell.getPosition());
     }
 
+    // The logic of removing an animal from cell
     private void removeFromCell(Island.Cell from) {
         Integer currentAmountInStartCell = from.getBiospheresAmountByType(getType());
         from.updateBiospheresAmountByType(getType(), --currentAmountInStartCell);
         from.getAnimals().remove(this);
     }
 
+    // The logic of choosing the direction of movement of the animal
     private Direction chooseDirectionMove() {
         Integer directionIndex = ThreadLocalRandom.current().nextInt(Direction.values().length);
         return switch (directionIndex) {
@@ -149,23 +146,22 @@ public abstract class Animal extends Biosphere implements Runnable {
         };
     }
 
+    // Animal die logic
     public void die() {
         if (currentSatiety > 0) {
             return;
         }
-        System.out.println(this + " HAS BEEN DIED");
+        System.out.println(this + " has died");
         removeFromCell(getCurrentCell());
     }
 
-    //Проверка, может ли животное съесть другое животное, с учетом вероятности
+    // Checking if an animal can eat another animal
     protected boolean canEat(BiosphereTypes victim) {
         Integer randomChance = ThreadLocalRandom.current().nextInt(0, 100);
-        System.out.println("randomChance to eat " + randomChance);
-        System.out.println("Chance to eat " + EatingProperties.getChanceToEat(getType(), victim));
         return EatingProperties.getChanceToEat(getType(), victim) > randomChance;
     }
 
-    //Create any kind of Animal
+    // Create any kind of Animal
     private static Optional<Animal> createAnimal(){
         Random random = new Random();
         Animal creatingAnimal = switch (random.nextInt(3)) {
@@ -177,6 +173,7 @@ public abstract class Animal extends Biosphere implements Runnable {
         return Optional.ofNullable(creatingAnimal);
     }
 
+    // Create animal by type
     private static Optional<Animal> createAnimal(BiosphereTypes parentsAnimalType){
         Animal creatingAnimal = switch (parentsAnimalType) {
             case WOLF -> new Wolf();
@@ -187,32 +184,40 @@ public abstract class Animal extends Biosphere implements Runnable {
         return Optional.ofNullable(creatingAnimal);
     }
 
+    // Animal behavior logic
     private void animalBehaviorLogic() {
         if (currentSatiety.equals(MAX_FOOD_TO_SATIATE)) {
             Integer randomAction = ThreadLocalRandom.current().nextInt(0, 2);
             switch (randomAction) {
-                case 1 -> {
+                case 0 -> {
                     move();
-                    System.out.println("ANIMAL MOVE");
+                    decreaseSatiety();
                 }
-                case 2 -> {
-                    System.out.println("ANIMAL MULTIPLY");
+                case 1 -> {
                     multiply();
                     decreaseSatiety();
                 }
             }
         } else if (currentSatiety <= 0){
-            System.out.println("ANIMAL DIE");
             die();
         } else {
-            System.out.println("ANIMAL EAT");
-            eat();
+            Integer randomAction = ThreadLocalRandom.current().nextInt(0, 3);
+            switch (randomAction) {
+                case 0 -> {
+                    move();
+                    decreaseSatiety();
+                }
+                case 1 -> {
+                    multiply();
+                    decreaseSatiety();
+                }
+                case 2 -> eat();
+            }
         }
     }
 
     @Override
     public void run() {
-        System.out.println("ANIMAL STEP");
         animalBehaviorLogic();
     }
 
