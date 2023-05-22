@@ -11,7 +11,6 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Animal extends Biosphere implements Runnable {
-    private static final Double SATIATE_INCREASE = 0.1;
     protected final Double MAX_FOOD_TO_SATIATE;
     protected final Integer MAX_MOVE_DISTANCE;
     protected Double currentSatiety;
@@ -55,7 +54,7 @@ public abstract class Animal extends Biosphere implements Runnable {
 
     // Animal starvation logic
     private void decreaseSatiety() {
-        currentSatiety -= MAX_FOOD_TO_SATIATE * SATIATE_INCREASE;
+        currentSatiety -= MAX_FOOD_TO_SATIATE * SimulationProperties.HEALTH_PERCENT_DECREASE_FROM_HUNGER;
     }
 
     // Animals multiply logic. Now realize only 1 child
