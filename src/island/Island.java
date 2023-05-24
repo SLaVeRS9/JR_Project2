@@ -202,11 +202,10 @@ public class Island implements Runnable {
 
         @Override
         public String toString() {
-            return "Cell {\t\t" +
-                    "coordinates: " +
+            return "Cell {\t" +
                     "x=" + getX() +
                     ", y=" + getY() +
-                    ",\t\t biospheres in cell: \t" + amountBiospheresByType +
+                    ",\t biospheres in cell: \t" + amountBiospheresByType +
                     '}' + "\n";
         }
 
