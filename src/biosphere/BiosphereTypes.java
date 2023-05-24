@@ -1,6 +1,4 @@
-package Biosphere;
-
-import SimulatorProperties.EatingProperties;
+package biosphere;
 
 public enum BiosphereTypes {
     WOLF ("\uD83D\uDC3A"),

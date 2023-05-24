@@ -1,9 +1,9 @@
-package Simulation;
+package simulation;
 
-import Biosphere.Plant;
-import Island.Island;
-import SimulatorProperties.SimulationProperties;
-import ThreadPools.*;
+import biosphere.Plant;
+import island.Island;
+import simulatorProperties.SimulationProperties;
+import threadPools.*;
 
 import java.util.Scanner;
 import java.util.concurrent.Executors;

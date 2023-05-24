@@ -1,8 +1,8 @@
-package Island;
+package island;
 
-import Biosphere.*;
-import Simulation.Simulation;
-import SimulatorProperties.SimulationProperties;
+import biosphere.*;
+import simulation.Simulation;
+import simulatorProperties.SimulationProperties;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.random.RandomGenerator;

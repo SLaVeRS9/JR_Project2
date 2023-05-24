@@ -1,4 +1,4 @@
-package Island;
+package island;
 
 public enum Direction {
     UP,

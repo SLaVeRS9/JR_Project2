@@ -1,6 +1,6 @@
-package Biosphere.Animals.Predators;
+package biosphere.animals.predators;
 
-import Biosphere.BiosphereTypes;
+import biosphere.BiosphereTypes;
 
 public class Wolf extends Predator {
     private static final BiosphereTypes TYPE = BiosphereTypes.WOLF;

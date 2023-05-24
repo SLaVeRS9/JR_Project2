@@ -1,6 +1,6 @@
-package SimulatorProperties;
+package simulatorProperties;
 
-import Biosphere.BiosphereTypes;
+import biosphere.BiosphereTypes;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

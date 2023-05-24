@@ -1,7 +1,7 @@
-package Biosphere.Animals.Predators;
+package biosphere.animals.predators;
 
-import Biosphere.Animal;
-import Biosphere.BiosphereTypes;
+import biosphere.Animal;
+import biosphere.BiosphereTypes;
 
 public abstract class Predator extends Animal {
     protected Predator(BiosphereTypes type, Integer maxCountInCell, Double maxFoodToSatiate, Double startWeight, Integer maxMultiplying, Integer maxMoveDistance) {

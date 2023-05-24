@@ -1,9 +1,9 @@
-package SimulatorProperties;
+package simulatorProperties;
 
-import Biosphere.Animal;
-import Biosphere.Animals.Herbivores.Sheep;
-import Biosphere.Animals.Predators.Fox;
-import Biosphere.Animals.Predators.Wolf;
+import biosphere.Animal;
+import biosphere.animals.herbivores.Sheep;
+import biosphere.animals.predators.Fox;
+import biosphere.animals.predators.Wolf;
 
 import java.util.ArrayList;
 import java.util.List;

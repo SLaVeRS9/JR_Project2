@@ -1,10 +1,10 @@
-package Biosphere;
+package biosphere;
 
-import Biosphere.Plants.Bush;
-import Biosphere.Plants.Grass;
-import Island.Island;
-import Simulation.Simulation;
-import SimulatorProperties.SimulationProperties;
+import biosphere.plants.Bush;
+import biosphere.plants.Grass;
+import island.Island;
+import simulation.Simulation;
+import simulatorProperties.SimulationProperties;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;

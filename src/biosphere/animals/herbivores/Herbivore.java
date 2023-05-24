@@ -1,7 +1,7 @@
-package Biosphere.Animals.Herbivores;
+package biosphere.animals.herbivores;
 
-import Biosphere.*;
-import Island.Island;
+import biosphere.*;
+import island.Island;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;

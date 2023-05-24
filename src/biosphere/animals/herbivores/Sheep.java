@@ -1,8 +1,6 @@
-package Biosphere.Animals.Herbivores;
+package biosphere.animals.herbivores;
 
-import Biosphere.Animal;
-import Biosphere.BiosphereTypes;
-import Biosphere.Biosphere;
+import biosphere.BiosphereTypes;
 
 public class Sheep extends Herbivore {
     private static final BiosphereTypes TYPE = BiosphereTypes.SHEEP;

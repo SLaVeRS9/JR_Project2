@@ -1,7 +1,7 @@
-package Biosphere.Plants;
+package biosphere.plants;
 
-import Biosphere.BiosphereTypes;
-import Biosphere.Plant;
+import biosphere.BiosphereTypes;
+import biosphere.Plant;
 
 public class Grass extends Plant {
     private static final BiosphereTypes TYPE = BiosphereTypes.GRASS;

@@ -1,6 +1,6 @@
-package Biosphere;
+package biosphere;
 
-import Island.Island;
+import island.Island;
 
 public abstract class Biosphere {
     protected final BiosphereTypes TYPE;

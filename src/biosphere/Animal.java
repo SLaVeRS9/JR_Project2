@@ -1,9 +1,9 @@
-package Biosphere;
+package biosphere;
 
-import Biosphere.Animals.Herbivores.*;
-import Biosphere.Animals.Predators.*;
-import Island.*;
-import SimulatorProperties.*;
+import biosphere.animals.herbivores.*;
+import biosphere.animals.predators.*;
+import island.*;
+import simulatorProperties.*;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
