@@ -31,6 +31,12 @@ public class Simulation {
         animalTaskScheduler.scheduleAtFixedRate(new AnimalTask(), 0, SimulationProperties.TIME_ON_STEP_IN_SECONDS, TimeUnit.SECONDS);
 
         String exit = input.nextLine();
+
+        phaser.forceTermination();
+        printStatisticsScheduler.shutdownNow();
+        growPlantsScheduler.shutdownNow();
+        animalTaskScheduler.shutdownNow();
+        AnimalThreadPool.stopAPool();
     }
 
     public static Phaser getPhaser() {
