@@ -8,12 +8,12 @@ import java.util.concurrent.*;
 import java.util.random.RandomGenerator;
 
 public class Island implements Runnable {
-    private static final List<List<Cell>> islandMap = new ArrayList<>(SimulationProperties.ISLAND_WIDTH);
+    private static final List<List<Cell>> ISLAND_MAP = new ArrayList<>(SimulationProperties.ISLAND_WIDTH);
     private static final Integer CHANCE_TO_SET_ANIMAL = 30;
-    private static final List<List<Cell>> unmodifiableIslandMap = Collections.unmodifiableList(islandMap);
+    private static final List<List<Cell>> UNMODIFIABLE_ISLAND_MAP = Collections.unmodifiableList(ISLAND_MAP);
     private static final Island ISLAND = new Island();
     public static List<List<Cell>> getIslandMap() {
-        return unmodifiableIslandMap;
+        return UNMODIFIABLE_ISLAND_MAP;
     }
     private static boolean simulationIsRunning = true;
     public static void stopSimulation() {
@@ -46,7 +46,7 @@ public class Island implements Runnable {
     }
 
     public static Cell getCell(Integer x, Integer y) {
-        return islandMap.get(x).get(y);
+        return ISLAND_MAP.get(x).get(y);
     }
 
     public static Cell getCell(Cell.Position position) {
@@ -72,13 +72,13 @@ public class Island implements Runnable {
                 Cell newCell = new Cell(i, j);
                 islandMapVertical.add(newCell);
             }
-            islandMap.add(Collections.unmodifiableList(islandMapVertical));
+            ISLAND_MAP.add(Collections.unmodifiableList(islandMapVertical));
         }
     }
 
     // Add plants on all island map
     private static void addPlants(){
-        for (List<Cell> cells : islandMap) {
+        for (List<Cell> cells : ISLAND_MAP) {
             for (Cell cell : cells) {
                 Plant plant = Plant.getRandomPlant();
                 cell.addBiosphere(plant);
@@ -90,7 +90,7 @@ public class Island implements Runnable {
     private static void addAnimals() {
         List<Animal> animals = SimulationProperties.startAnimalsPopulation;
         while (animals.size() > 0) {
-            for (List<Cell> cells : islandMap) {
+            for (List<Cell> cells : ISLAND_MAP) {
                 for (Cell cell : cells) {
                     int random = RandomGenerator.getDefault().nextInt(100);
                     if (random < CHANCE_TO_SET_ANIMAL) {
@@ -114,7 +114,7 @@ public class Island implements Runnable {
     }
 
     public static synchronized void printMap() {
-        System.out.println(unmodifiableIslandMap);
+        System.out.println(UNMODIFIABLE_ISLAND_MAP);
     }
 
     @Override
