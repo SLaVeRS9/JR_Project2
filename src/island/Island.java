@@ -10,7 +10,7 @@ import java.util.random.RandomGenerator;
 public class Island implements Runnable {
     private static final List<List<Cell>> ISLAND_MAP = new ArrayList<>(SimulationProperties.ISLAND_WIDTH);
     private static final Integer CHANCE_TO_SET_ANIMAL = 30;
-    private static final List<List<Cell>> UNMODIFIABLE_ISLAND_MAP = Collections.unmodifiableList(ISLAND_MAP);
+    private static final List<List<Cell>> UNMODIFIABLE_ISLAND_MAP = Collections.unmodifiableList(ISLAND_MAP);//new CopyOnWriteArrayList<>(ISLAND_MAP);//Collections.unmodifiableList(ISLAND_MAP);
     private static final Island ISLAND = new Island();
     public static List<List<Cell>> getIslandMap() {
         return UNMODIFIABLE_ISLAND_MAP;
@@ -113,7 +113,7 @@ public class Island implements Runnable {
         }
     }
 
-    public static synchronized void printMap() {
+    public static void printMap() {
         System.out.println(UNMODIFIABLE_ISLAND_MAP);
     }
 
@@ -135,8 +135,8 @@ public class Island implements Runnable {
                 return sb.toString();
             }
         };
-        private List<Animal> animals = new ArrayList<>();
-        private List<Plant> plants = new ArrayList<>();
+        private List<Animal> animals = Collections.synchronizedList(new ArrayList<>());//new CopyOnWriteArrayList<>();
+        private List<Plant> plants =  new CopyOnWriteArrayList<>();
         private final List<Plant> unmodifiablePlants = Collections.unmodifiableList(plants);
 
         public Cell(Integer x, Integer y) {
@@ -165,10 +165,10 @@ public class Island implements Runnable {
             amountBiospheresByType.put(biosphereType, amount);
         }
 
-        public List<Animal> getAnimals() {
+        public synchronized List<Animal> getAnimals() {
             return animals;
         }
-        public List<Plant> getPlants() {
+        public synchronized List<Plant> getPlants() {
             return unmodifiablePlants;
         }
 
@@ -202,11 +202,11 @@ public class Island implements Runnable {
 
         @Override
         public String toString() {
-            return "Cell {\t" +
+            return " {\t" +
                     "x=" + getX() +
                     ", y=" + getY() +
                     ",\t biospheres in cell: \t" + amountBiospheresByType +
-                    '}' + "\n";
+                    "}\n";
         }
 
         public static class Position {
@@ -236,10 +236,10 @@ public class Island implements Runnable {
 
             @Override
             public String toString() {
-                return "Position{" +
+                return "{" +
                         "x=" + getX() +
                         ", y=" + getY() +
-                        '}' + "\n";
+                        '}';
             }
         }
     }
