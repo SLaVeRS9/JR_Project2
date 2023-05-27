@@ -26,7 +26,7 @@ public abstract class Herbivore extends Animal {
 
     // Eat method to eat plant or other animal
     @Override
-    public void eat() {
+    public synchronized void eat() {
         Island.Cell currentCell = Island.getCell(getCurrentPosition());
         Optional<Plant> optionalPlant = findPlant();
         if (optionalPlant.isPresent()) {
@@ -37,7 +37,6 @@ public abstract class Herbivore extends Animal {
             currentSatiety = plantsCanBeEaten * plant.getWeight();
             Integer remainingPlants = plantsAmount - plantsCanBeEaten.intValue();
             currentCell.updateBiospheresAmountByType(plant.getType(), remainingPlants);
-            currentCell.getPlants().remove(plant);
             System.out.println("Herbivore " + this.getType().getUnicode() + " has eaten " + plantsCanBeEaten + " " + plant.getType().getUnicode());
         } else {
             super.eat();
