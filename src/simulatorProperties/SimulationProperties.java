@@ -1,9 +1,8 @@
 package simulatorProperties;
 
 import biosphere.Animal;
-import biosphere.animals.herbivores.Sheep;
-import biosphere.animals.predators.Fox;
-import biosphere.animals.predators.Wolf;
+import biosphere.animals.herbivores.*;
+import biosphere.animals.predators.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,18 +40,51 @@ public class SimulationProperties {
 
     // Starting animals population
     public static List<Animal> startAnimalsPopulation = new ArrayList<>(40) {{
-        add(new Wolf());
-        add(new Wolf());
-        add(new Wolf());
-        add(new Wolf());
-        add(new Fox());
-        add(new Fox());
-        add(new Fox());
-        add(new Fox());
-        add(new Sheep());
-        add(new Sheep());
-        add(new Sheep());
-        add(new Sheep());
+        for (int i = 0; i < 4; i++) {
+            add(new Wolf());
+        }
+        for (int i = 0; i < 4; i++) {
+            add(new Fox());
+        }
+        for (int i = 0; i < 10; i++) {
+            add(new Sheep());
+        }
+        for (int i = 0; i < 4; i++) {
+            add(new Snake());
+        }
+        for (int i = 0; i < 4; i++) {
+            add(new Bear());
+        }
+        for (int i = 0; i < 6; i++) {
+            add(new Eagle());
+        }
+        for (int i = 0; i < 6; i++) {
+            add(new Horse());
+        }
+        for (int i = 0; i < 6; i++) {
+            add(new Deer());
+        }
+        for (int i = 0; i < 20; i++) {
+            add(new Rabbit());
+        }
+        for (int i = 0; i < 40; i++) {
+            add(new Mouse());
+        }
+        for (int i = 0; i < 6; i++) {
+            add(new Goat());
+        }
+        for (int i = 0; i < 6; i++) {
+            add(new Boar());
+        }
+        for (int i = 0; i < 6; i++) {
+            add(new Buffalo());
+        }
+        for (int i = 0; i < 10; i++) {
+            add(new Duck());
+        }
+        for (int i = 0; i < 100; i++) {
+            add(new Caterpillar());
+        }
     }};
 
 }
