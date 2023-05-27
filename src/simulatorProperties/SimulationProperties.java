@@ -30,14 +30,16 @@ public class SimulationProperties {
     private static final int PREDATORS_KINDS_STARTING_AMOUNT = 5;
     public static final int PREDATORS_STARTING_AMOUNT = PREDATORS_KINDS_STARTING_AMOUNT * 2;
 
+    // Plants params
     private static final int PLANTS_KINDS_STARTING_AMOUNT = 2;
     public static final int PLANTS_STARTING_AMOUNT = PLANTS_KINDS_STARTING_AMOUNT * 20;
-
 
     // Animals params
     public static final double HEALTH_PERCENT_DECREASE_FROM_HUNGER = 0.1;
 
     public static final int PERCENT_OF_CHANCE_NEW_PLANTS_GROW_IN_CELL = 15;
+
+    // Starting animals population
     public static List<Animal> startAnimalsPopulation = new ArrayList<>(40) {{
         add(new Wolf());
         add(new Wolf());
@@ -52,7 +54,5 @@ public class SimulationProperties {
         add(new Sheep());
         add(new Sheep());
     }};
-
-    // Plants params
 
 }
