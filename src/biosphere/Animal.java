@@ -28,12 +28,12 @@ public abstract class Animal extends Biosphere implements Runnable {
             Integer randomAction = ThreadLocalRandom.current().nextInt(0, 2);
             switch (randomAction) {
                 case 0 -> {
-                    System.out.println("Animal " + this.getType().getUnicode() + " in cell " + this.getCurrentCell().getPosition() + " move");
+                    System.out.println("Animal " + this + " in cell " + this.getCurrentCell().getPosition() + " move");
                     move();
                     decreaseSatiety();
                 }
                 case 1 -> {
-                    System.out.println("Animal " + this.getType().getUnicode() + " in cell " + this.getCurrentCell().getPosition() + " multiply");
+                    System.out.println("Animal " + this + " in cell " + this.getCurrentCell().getPosition() + " multiply");
                     multiply();
                     decreaseSatiety();
                 }
@@ -50,7 +50,7 @@ public abstract class Animal extends Biosphere implements Runnable {
                     decreaseSatiety();
                 }
                 case 1 -> {
-                    System.out.println("Animal " + this + " in cell " + this.getCurrentCell()+ " multiply");
+                    System.out.println("Animal " + this + " in cell " + this.getCurrentCell().getPosition() + " multiply");
                     multiply();
                     decreaseSatiety();
                 }
@@ -123,7 +123,7 @@ public abstract class Animal extends Biosphere implements Runnable {
             multiplyCandidates = getCurrentCell().getBiospheresAmountByType(TYPE);
         }
 
-        if (multiplyCandidates > 1) {
+        if (multiplyCandidates > 1 && multiplyCandidates < getMaxMultiplying()) {
             Optional<Animal> optionalAnimal = Animal.createAnimal(getType());
             if (optionalAnimal.isEmpty()) {
                 return;
@@ -178,6 +178,17 @@ public abstract class Animal extends Biosphere implements Runnable {
                 }
                 case STAY -> currentCell;
             };
+            synchronized (Island.getCell(newCell.getPosition()).getBiospheresByType()) {
+                Island.Cell cell = Island.getCell(newCell.getPosition());
+                System.out.println(cell.getBiospheresByType());
+                System.out.println(cell.getBiospheresAmountByType(getType()));
+                Integer biospheresAmountByType = cell.getBiospheresAmountByType(getType()) != null
+                        ? cell.getBiospheresAmountByType(getType())
+                        : 0;
+                if(biospheresAmountByType >= getMaxCountInCell()){
+                    return;
+                }
+            }
         System.out.println("Animal " + this.getType().getUnicode() + " has moved from " + currentCell.getPosition() + " "
                 + directionMove.toString().toLowerCase() + " " + directionDistance + " to " + newCell.getPosition());
         swapCells(currentCell, newCell);
@@ -188,10 +199,10 @@ public abstract class Animal extends Biosphere implements Runnable {
     private Direction chooseDirectionMove() {
         Integer directionIndex = ThreadLocalRandom.current().nextInt(Direction.values().length - 1);
         return switch (directionIndex) {
-            case 1 -> Direction.DOWN;
-            case 2-> Direction.UP;
-            case 3 -> Direction.LEFT;
-            case 4 -> Direction.RIGHT;
+            case 0 -> Direction.DOWN;
+            case 1-> Direction.UP;
+            case 2 -> Direction.LEFT;
+            case 3 -> Direction.RIGHT;
             default -> Direction.STAY;
         };
     }
