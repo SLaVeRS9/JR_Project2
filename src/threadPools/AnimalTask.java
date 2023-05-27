@@ -8,35 +8,45 @@ import java.util.List;
 import java.util.concurrent.*;
 
 public class AnimalTask implements Runnable {
-    private static Integer iteration = 0;
-    private static List<Animal> animals = new CopyOnWriteArrayList<>();
+    private static List<Animal> animalsToStart = new CopyOnWriteArrayList<>();
+    private static List<Island.Cell> cellsWithAnimals = new CopyOnWriteArrayList<>();
 
     @Override
     public void run() {
         Simulation.getPhaser().arriveAndAwaitAdvance();
-        Island.Cell randomCell = Island.getRandomCell();
-        List<Animal> animals = randomCell.getAnimals();
-        Integer animalsCount = Math.min(animals.size(), SimulationProperties.THREADS_COUNT);
-        Animal animal = null;
-        for (int i = 0; i < animalsCount; i++) {
-            randomCell = Island.getRandomCell();
-            animals = randomCell.getAnimals();
-            while (animals.size() == 0 && iteration < 10) {
-                randomCell = Island.getRandomCell();
-                animals = randomCell.getAnimals();
-                iteration++;
+        List<List<Island.Cell>> islandMap = Island.getIslandMap();
+        for (int i = 0; i < islandMap.size(); i++) {
+            for (int j = 0; j < islandMap.get(i).size(); j++) {
+                if(islandMap.get(i).get(j).getAnimals().size() > 0) {
+                    Island.Cell cell = islandMap.get(i).get(j);
+                    cellsWithAnimals.add(cell);
+                }
             }
-            if(animals.size() > 0) {
-                Integer randomBiosphereIndex = ThreadLocalRandom.current().nextInt(animals.size());
-                animal = animals.get(randomBiosphereIndex);
-                System.out.print("Has been chosen animal " + animal.getType().getUnicode() + " in cell " + animal.getCurrentCell());
-            }
-            AnimalTask.animals.add(animal);
         }
+
+        Integer cellsWithAnimalsCount = Math.min(cellsWithAnimals.size(), SimulationProperties.THREADS_COUNT);
+        for (int i = 0; i < cellsWithAnimalsCount; i++) {
+            Integer randomCellPosition = ThreadLocalRandom.current().nextInt(0, cellsWithAnimals.size());
+            Island.Cell randomCell = cellsWithAnimals.get(randomCellPosition);
+            if(randomCell.getAnimals().size() < 1) {
+                cellsWithAnimals.remove(randomCell);
+                continue;
+            }
+            List<Animal> animals = randomCell.getAnimals();
+            Integer randomAnimalIndex = ThreadLocalRandom.current().nextInt(animals.size());
+            Animal animal = animals.get(randomAnimalIndex);
+            if (animalsToStart.contains(animal)) {
+                continue;
+            }
+            System.out.println("Has been chosen animal " + animal + " in cell " + animal.getCurrentCell().getPosition());
+            AnimalTask.animalsToStart.add(animal);
+        }
+
         // Logic for many threads
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-        for (int i = AnimalTask.animals.size() - 1; i >= 0; i--) {
-            executorService.submit(AnimalTask.animals.remove(i));
+        for (Animal animal : animalsToStart) {
+            AnimalThreadPool.startAPool(animal);
         }
+        animalsToStart.clear();
+        cellsWithAnimals.clear();
     }
 }
