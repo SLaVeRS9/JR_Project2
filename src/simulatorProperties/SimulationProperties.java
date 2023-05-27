@@ -11,9 +11,9 @@ import java.util.List;
 public class SimulationProperties {
 
     // Program params
-    public static final int TIME_ON_STEP_IN_MILLISECONDS = 3000;
+    public static final int TIME_ON_STEP_IN_MILLISECONDS = 1000;
     public static final int TIME_ON_STEP_IN_SECONDS = TIME_ON_STEP_IN_MILLISECONDS / 1000;
-    public static final int THREADS_COUNT = 1;
+    public static final int THREADS_COUNT = 3;
 
     // Island params
     public static final int ISLAND_HEIGHT = 3;
@@ -37,6 +37,7 @@ public class SimulationProperties {
     // Animals params
     public static final double HEALTH_PERCENT_DECREASE_FROM_HUNGER = 0.1;
 
+    public static final int PERCENT_OF_CHANCE_NEW_PLANTS_GROW_IN_CELL = 15;
     public static List<Animal> startAnimalsPopulation = new ArrayList<>(40) {{
         add(new Wolf());
         add(new Wolf());
@@ -53,5 +54,5 @@ public class SimulationProperties {
     }};
 
     // Plants params
-    public static final int PERCENT_OF_CHANCE_NEW_PLANTS_GROW_IN_CELL = 15;
+
 }
