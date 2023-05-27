@@ -26,7 +26,7 @@ public abstract class Herbivore extends Animal {
 
     // Eat method to eat plant or other animal
     @Override
-    public synchronized void eat() {
+    public void eat() {
         Island.Cell currentCell = Island.getCell(getCurrentPosition());
         Optional<Plant> optionalPlant = findPlant();
         if (optionalPlant.isPresent()) {
