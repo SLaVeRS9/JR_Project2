@@ -179,7 +179,7 @@ public abstract class Animal extends Biosphere implements Runnable {
                 case STAY -> currentCell;
             };
         System.out.println("Animal " + this.getType().getUnicode() + " has moved from " + currentCell.getPosition() + " "
-                + directionMove + " " + directionDistance + " to " + newCell.getPosition());
+                + directionMove.toString().toLowerCase() + " " + directionDistance + " to " + newCell.getPosition());
         swapCells(currentCell, newCell);
         currentPosition = newCell.getPosition();
     }
