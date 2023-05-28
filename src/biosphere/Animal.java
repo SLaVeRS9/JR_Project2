@@ -5,7 +5,6 @@ import biosphere.animals.predators.*;
 import island.*;
 import simulatorProperties.*;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -28,12 +27,12 @@ public abstract class Animal extends Biosphere implements Runnable {
             Integer randomAction = ThreadLocalRandom.current().nextInt(0, 2);
             switch (randomAction) {
                 case 0 -> {
-                    System.out.println("Animal " + this + " in cell " + this.getCurrentCell().getPosition() + " move");
+                    System.out.println("Animal " + this + " in cell " + this.getCurrentCell().getPosition() + " try move");
                     move();
                     decreaseSatiety();
                 }
                 case 1 -> {
-                    System.out.println("Animal " + this + " in cell " + this.getCurrentCell().getPosition() + " multiply");
+                    System.out.println("Animal " + this + " in cell " + this.getCurrentCell().getPosition() + " try multiply");
                     multiply();
                     decreaseSatiety();
                 }
@@ -45,17 +44,17 @@ public abstract class Animal extends Biosphere implements Runnable {
             Integer randomAction = ThreadLocalRandom.current().nextInt(0, 3);
             switch (randomAction) {
                 case 0 -> {
-                    System.out.println("Animal " + this + " in cell " + this.getCurrentCell().getPosition() + " move");
+                    System.out.println("Animal " + this + " in cell " + this.getCurrentCell().getPosition() + " try move");
                     move();
                     decreaseSatiety();
                 }
                 case 1 -> {
-                    System.out.println("Animal " + this + " in cell " + this.getCurrentCell().getPosition() + " multiply");
+                    System.out.println("Animal " + this + " in cell " + this.getCurrentCell().getPosition() + " try multiply");
                     multiply();
                     decreaseSatiety();
                 }
                 case 2 -> {
-                    System.out.println("Animal " + this + " in cell " + this.getCurrentCell().getPosition() + " eat");
+                    System.out.println("Animal " + this + " in cell " + this.getCurrentCell().getPosition() + " try eat");
                     eat();
                 }
             }
@@ -93,16 +92,13 @@ public abstract class Animal extends Biosphere implements Runnable {
         }
         if (!animals.isEmpty()) {
             Integer randomAnimalIndex = ThreadLocalRandom.current().nextInt(animals.size());
-            while (animals.get(randomAnimalIndex).equals(this) || (animals.contains(this) && animals.size() == 1)) {
+            while ( animals.get(randomAnimalIndex).equals(this) || ( animals.contains(this) && animals.size() == 1 ) ) {
                 randomAnimalIndex = ThreadLocalRandom.current().nextInt(animals.size());
                 Animal animal = animals.get(randomAnimalIndex);
-                Optional<Animal> optionalAnimal = Optional.ofNullable(animal);
-                return optionalAnimal;
+                return Optional.ofNullable(animal);
             }
-            return Optional.empty();
-        } else {
-            return Optional.empty();
         }
+        return Optional.empty();
     }
 
     // Checking if an animal can eat another animal
@@ -123,7 +119,7 @@ public abstract class Animal extends Biosphere implements Runnable {
             multiplyCandidates = getCurrentCell().getBiospheresAmountByType(TYPE);
         }
 
-        if (multiplyCandidates > 1 && multiplyCandidates < getMaxMultiplying()) {
+        if (multiplyCandidates > 1 && multiplyCandidates < getMaxCountInCell()) {
             Optional<Animal> optionalAnimal = Animal.createAnimal(getType());
             if (optionalAnimal.isEmpty()) {
                 return;
@@ -136,7 +132,7 @@ public abstract class Animal extends Biosphere implements Runnable {
             synchronized (getCurrentCell().getBiospheresByType()) {
                 getCurrentCell().getBiospheresByType().replace(TYPE, multiplyCandidates, ++multiplyCandidates);
             }
-            System.out.println("Animal " + this + " has multiplied");
+            System.out.println("Animal " + this + " has been multiplied");
         } else {
             System.out.println("Animal " + this + " can't multiply");
         }
@@ -180,8 +176,6 @@ public abstract class Animal extends Biosphere implements Runnable {
             };
             synchronized (Island.getCell(newCell.getPosition()).getBiospheresByType()) {
                 Island.Cell cell = Island.getCell(newCell.getPosition());
-                System.out.println(cell.getBiospheresByType());
-                System.out.println(cell.getBiospheresAmountByType(getType()));
                 Integer biospheresAmountByType = cell.getBiospheresAmountByType(getType()) != null
                         ? cell.getBiospheresAmountByType(getType())
                         : 0;
@@ -252,10 +246,22 @@ public abstract class Animal extends Biosphere implements Runnable {
     // Create any kind of Animal
     private static Optional<Animal> createAnimal(){
         Random random = new Random();
-        Animal creatingAnimal = switch (random.nextInt(3)) {
+        Animal creatingAnimal = switch (random.nextInt(BiosphereTypes.values().length) - 2) {
             case 0 -> new Wolf();
             case 1 -> new Fox();
             case 2 -> new Sheep();
+            case 3 -> new Boar();
+            case 4 -> new Buffalo();
+            case 5 -> new Caterpillar();
+            case 6 -> new Deer();
+            case 7 -> new Duck();
+            case 8 -> new Goat();
+            case 9 -> new Horse();
+            case 10 -> new Mouse();
+            case 11 -> new Rabbit();
+            case 12 -> new Bear();
+            case 13 -> new Eagle();
+            case 14 -> new Snake();
             default -> null;
         };
         return Optional.ofNullable(creatingAnimal);
@@ -267,6 +273,18 @@ public abstract class Animal extends Biosphere implements Runnable {
             case WOLF -> new Wolf();
             case FOX -> new Fox();
             case SHEEP -> new Sheep();
+            case BOAR -> new Boar();
+            case BUFFALO -> new Buffalo();
+            case CATERPILLAR -> new Caterpillar();
+            case DEER -> new Deer();
+            case DUCK -> new Duck();
+            case GOAT -> new Goat();
+            case HORSE -> new Horse();
+            case MOUSE -> new Mouse();
+            case RABBIT -> new Rabbit();
+            case BEAR -> new Bear();
+            case EAGLE -> new Eagle();
+            case SNAKE -> new Snake();
             default -> null;
         };
         return Optional.ofNullable(creatingAnimal);
