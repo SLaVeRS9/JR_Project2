@@ -16,9 +16,6 @@ public class Island implements Runnable {
         return UNMODIFIABLE_ISLAND_MAP;
     }
     private static boolean simulationIsRunning = true;
-    public static void stopSimulation() {
-        simulationIsRunning = false;
-    }
     public static boolean getSimulationIsRunning(){
         return simulationIsRunning;
     }
@@ -29,6 +26,10 @@ public class Island implements Runnable {
         return ISLAND;
     }
 
+    public static void stopSimulation() {
+        simulationIsRunning = false;
+    }
+
     //Generate island map to use
     public static void generateMap(){
         createMap();
@@ -36,9 +37,11 @@ public class Island implements Runnable {
 
         //Add plants to the map
         addPlants();
+
+        List<Animal> animals = SimulationProperties.startAnimalsPopulation;
         
         //Add animals to the map
-        addAnimals();
+        addAnimals(animals);
 
         //Print map
         System.out.println("\nCurrent statistics");
@@ -87,17 +90,13 @@ public class Island implements Runnable {
     }
 
     // Add animals on all island map
-    private static void addAnimals() {
-        List<Animal> animals = SimulationProperties.startAnimalsPopulation;
-        while (animals.size() > 0) {
+    private static void addAnimals(List<Animal> animalsToAdd) {
+        while (animalsToAdd.size() > 0) {
             for (List<Cell> cells : ISLAND_MAP) {
                 for (Cell cell : cells) {
                     int random = RandomGenerator.getDefault().nextInt(100);
-                    if (random < CHANCE_TO_SET_ANIMAL) {
-                        if (animals.size() == 0) {
-                            break;
-                        }
-                        Animal animal = animals.remove(animals.size() - 1);
+                    if (random < CHANCE_TO_SET_ANIMAL && animalsToAdd.size() > 0) {
+                        Animal animal = animalsToAdd.remove(animalsToAdd.size() - 1);
                         animal.setPosition(cell.position);
                         Integer currentAnimalsByTypeAmount = cell.amountBiospheresByType.get(animal.getType());
                         if (currentAnimalsByTypeAmount == null) {
@@ -135,7 +134,7 @@ public class Island implements Runnable {
                 return sb.toString();
             }
         };
-        private List<Animal> animals = Collections.synchronizedList(new ArrayList<>());//new CopyOnWriteArrayList<>();
+        private List<Animal> animals = Collections.synchronizedList(new ArrayList<>());
         private List<Plant> plants =  new CopyOnWriteArrayList<>();
         private final List<Plant> unmodifiablePlants = Collections.unmodifiableList(plants);
 
