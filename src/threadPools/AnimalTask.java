@@ -15,10 +15,9 @@ public class AnimalTask implements Runnable {
     public void run() {
         Simulation.getPhaser().arriveAndAwaitAdvance();
         List<List<Island.Cell>> islandMap = Island.getIslandMap();
-        for (int i = 0; i < islandMap.size(); i++) {
-            for (int j = 0; j < islandMap.get(i).size(); j++) {
-                if(islandMap.get(i).get(j).getAnimals().size() > 0) {
-                    Island.Cell cell = islandMap.get(i).get(j);
+        for (List<Island.Cell> cells : islandMap) {
+            for (Island.Cell cell : cells) {
+                if (cell.getAnimals().size() > 0) {
                     cellsWithAnimals.add(cell);
                 }
             }
